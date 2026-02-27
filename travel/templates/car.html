@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="relative w-full h-[200px] md:h-[250px] overflow-hidden flex items-center">
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'homebanner.webp' %}" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-sky-500/40 backdrop-blur-[2px]"></div>
+    </div>
+
+    <div class="relative z-10 w-full px-6 md:px-12 ">
+        <h1 class="text-3xl l font-semibold text-white mb-2 ">
+            Car Rental
+        </h1>
+        <nav class="flex font-bold text-lg drop-shadow-sm">
+            <a href="{% url 'home' %}" class="text-black hover:underline">Home</a>
+            <span class="mx-2 text-white">/</span>
+            <span class="text-white">Car Rental</span>
+        </nav>
+    </div>
+</section>
+
+<div class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="bg-white border mb-6 sm:mb-8 text-md md:text-2xl 
+           font-bold flex sm:flex-row items-start sm:items-center gap-2 sm:gap-3 
+           shadow-sm ">
+            <i class='bx bxs-car bg-[#121D2D] p-3 rounded-sm text-white text-base sm:text-lg md:text-xl'></i>
+            <span class="py-2">Car Rental From Chennai</span>
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for v in vehicles %}
+            <div class="bg-gray-200 rounded overflow-hidden shadow-lg border border-gray-300">
+                <img src="{{ v.main_image.url }}" class="w-full h-48 object-cover">
+                <div class="p-4 text-center">
+                    <h3 class="font-bold text-lg mb-4">{{ v.name }}</h3>
+                    
+                    <div class="grid grid-cols-4 gap-2 mb-6 text-[10px] font-bold">
+                        <div><i class='bx bx-accessibility border border-black rounded-full px-2 py-1 text-2xl'></i><br>{{ v.seat_count }}</div>
+                        <div><i class='bx bx-tv border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if v.has_tv %}Yes{% else %}No{% endif %}</div>
+                        <div><i class='bx bx-wind border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if v.has_ac %}AC{% else %}Non-AC{% endif %}</div>
+                        <div><i class='bx bx-volume-full border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if v.has_speaker %}Yes{% else %}No{% endif %}</div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="{% url 'vehicle_detail' v.pk %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded font-bold text-xs hover:bg-yellow-500 transition">Vehicle Details</a>
+                        <button class="bg-blue-950 text-white px-4 py-2 rounded font-bold text-xs hover:bg-black transition">Book</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="relative bg-[url('https://i.imgur.com/QZ6YF9C.png')] bg-cover bg-center py-12">
+  <div class="absolute inset-0 bg-black"></div>
+
+  <div class="relative max-w-5xl mx-auto p-4">
+
+    <!-- Display Django Messages as Popup -->
+    {% if messages %}
+      {% for message in messages %}
+        <div id="popupOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white w-[90%] max-w-md rounded-sm shadow-xl p-8 text-center relative animate-fadeIn">
+            <button onclick="closePopup()" class="absolute top-2 right-3 text-gray-500 text-xl font-bold">&times;</button>
+            {% if message.tags == 'success' %}
+              <div class="text-green-600 text-5xl mb-4">✔</div>
+            {% elif message.tags == 'warning' %}
+              <div class="text-yellow-500 text-5xl mb-4">⚠</div>
+            {% else %}
+              <div class="text-red-600 text-5xl mb-4">✖</div>
+            {% endif %}
+            <h2 class="text-lg font-bold uppercase tracking-wider mb-4">{{ message }}</h2>
+            <button onclick="closePopup()" class="bg-[#0b1f3a] text-white px-8 py-3 font-bold uppercase text-sm tracking-widest hover:bg-black transition">OK</button>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Toggle Buttons -->
+    <div class="flex mb-6">
+      <button id="rentalBtn" onclick="showRental()" class="w-1/2 py-3 font-semibold bg-sky-400 text-black text-[24px]">BOOK RENTAL CAR</button>
+      <button id="tourBtn" onclick="showTour()" class="w-1/2 py-3 font-semibold bg-white text-gray-500 text-[24px]">BOOK TOUR PACKAGE</button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 text-white">
+        <div id="rentalForm">
+          <form method="POST" class="grid grid-cols-1 md:grid-cols-2 text-[16px] gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="rental">
+
+            <div>
+              <label class="font-semibold">Guest Name</label>
+              <input type="text" name="name" required pattern="[A-Za-z\s]+"
+                     oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                     placeholder="Enter your name"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Phone Number</label>
+              <input type="text" name="phone" required maxlength="10" pattern="\d{10}"
+                     oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                     placeholder="Enter 10-digit phone number"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Mail ID</label>
+              <input type="email" name="email" required 
+                  placeholder="Enter your email"
+                  class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold" >Your City</label>
+              <input type="text" name="city" required pattern="[A-Za-z\s]+"
+                     oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                     placeholder="Enter your city"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Vehicle Category</label>
+              <select name="vehicle_category" required class="w-full p-2 text-black" id="vehicleCategory">
+                <option value="">Select Vehicle Category</option>
+                {% for cat in categories %}
+                  <option value="{{ cat }}">{{ cat|title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label class="font-semibold">Vehicle Model</label>
+              <select name="vehicle_model" required class="w-full p-2 text-black" id="vehicleModel">
+                <option value="">Select Vehicle Model</option>
+                {% for vehicle in vehicles %}
+                  <option value="{{ vehicle.id }}" data-category="{{ vehicle.category }}">{{ vehicle.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label class="font-semibold">Number of Person</label>
+              <input type="number" name="num_person" min="1" class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Pickup Date</label>
+              <input type="date" name="pickup_date" class="w-full p-2 text-black">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="font-semibold">Message</label>
+              <textarea name="message" rows="4" class="w-full p-2 text-black"></textarea>
+            </div>
+
+            <button type="submit" class="bg-gray-300 text-black px-6 py-2 mt-2">Continue enquiry</button>
+          </form>
+        </div>
+
+        <!-- TOUR FORM -->
+        <div id="tourForm" class="hidden">
+          <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="tour">
+
+            <div>
+              <label class="font-semibold">Guest Name</label>
+              <input type="text" name="name" required pattern="[A-Za-z\s]+"
+                     oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                     placeholder="Enter your name"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Phone Number</label>
+              <input type="text" name="phone" required maxlength="10" pattern="\d{10}"
+                     oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                     placeholder="Enter 10-digit phone number"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Mail ID</label>
+              <input type="email" name="email" required class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Your City</label>
+              <input type="text" name="city" required pattern="[A-Za-z\s]+"
+                     oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                     placeholder="Enter your city"
+                     class="w-full p-2 text-black">
+            </div>
+
+            <div>
+              <label class="font-semibold">Package Type</label>
+              <select name="tour_package" required class="w-full p-2 text-black">
+                <option value="">Select Tour Package</option>
+                {% for tour in tour_packages %}
+                  <option value="{{ tour.id }}">{{ tour.title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label class="font-semibold">Pickup Date</label>
+              <input type="date" name="pickup_date" class="w-full p-2 text-black">
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="font-semibold">Message</label>
+              <textarea name="message" rows="4" class="w-full p-2 text-black"></textarea>
+            </div>
+
+            <button type="submit" class="bg-gray-300 text-black px-6 py-2 mt-2">Continue enquiry</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- RIGHT FEATURES (same as before) -->
+      <div class="space-y-3 text-white">
+        <!-- Rental Features -->
+        <div id="rentalFeatures" class="space-y-3">
+          <div class="flex items-center gap-3 border border-white p-3">
+            <div class="w-12 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl">
+              <i class='bx bx-car'></i>
+            </div>
+            HYGE SELECTION OF CARS & BUSES
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl">
+              <i class='bx bx-cool'></i>
+            </div>
+            LUXURY CLASS A/C CARS
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl">
+              <i class='bx bx-time'></i>
+            </div>
+            24*7 HOURS SERVICE
+          </div>
+          
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-message-rounded-dots'></i> 
+            </div> 
+            INSTANT SMS ALERTS 
+          </div>
+
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-rupee'></i> 
+            </div> 
+            SPECIAL RATES AVAILABLE 
+          </div>
+
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-credit-card'></i> 
+            </div> 
+            CREDIT & DEBIT CARD PAYMENT 
+          </div>
+        </div>
+
+        <!-- Tour Features -->
+        <div id="tourFeatures" class="space-y-3 hidden">
+          <div class="flex items-center gap-3 border border-white p-3">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl">
+              <i class='bx bx-group'></i>
+            </div>
+            10000+ SATISFIED GUEST
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-wallet'></i> 
+            </div>
+             UNBEATABLE PRICES 
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-home'></i> 
+            </div> 
+            CUSTOMISED HOLIDAYS PACKAGES 
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-smile'></i> 
+            </div> 
+            HAPPINESS GUARANTEED 
+          </div>
+          <div class="flex items-center gap-3 border border-white p-3"> 
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black text-3xl"> 
+              <i class='bx bx-credit-card'></i> 
+            </div> 
+            CREDIT & DEBIT CARD PAYMENT 
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+function showRental() {
+  rentalForm.classList.remove("hidden");
+  tourForm.classList.add("hidden");
+  rentalFeatures.classList.remove("hidden");
+  tourFeatures.classList.add("hidden");
+
+  rentalBtn.classList.add("bg-sky-400","text-black");
+  rentalBtn.classList.remove("bg-white","text-gray-500");
+
+  tourBtn.classList.add("bg-white","text-gray-500");
+  tourBtn.classList.remove("bg-sky-400","text-black");
+}
+
+function showTour() {
+  rentalForm.classList.add("hidden");
+  tourForm.classList.remove("hidden");
+  rentalFeatures.classList.add("hidden");
+  tourFeatures.classList.remove("hidden");
+
+  tourBtn.classList.add("bg-sky-400","text-black");
+  tourBtn.classList.remove("bg-white","text-gray-500");
+
+  rentalBtn.classList.add("bg-white","text-gray-500");
+  rentalBtn.classList.remove("bg-sky-400","text-black");
+}
+
+// Vehicle Model filter based on selected category
+const vehicleCategory = document.getElementById('vehicleCategory');
+const vehicleModel = document.getElementById('vehicleModel');
+
+vehicleCategory.addEventListener('change', function() {
+  const selectedCat = this.value;
+  Array.from(vehicleModel.options).forEach(opt => {
+    if(opt.value === "") return;
+    if(opt.dataset.category === selectedCat){
+      opt.style.display = "block";
+    } else {
+      opt.style.display = "none";
+    }
+  });
+  vehicleModel.value = "";
+});
+
+
+function closePopup() {
+  const popup = document.getElementById("popupOverlay");
+  if(popup) popup.style.display = "none";
+}
+setTimeout(closePopup, 4000);
+</script>
+{% endblock %}

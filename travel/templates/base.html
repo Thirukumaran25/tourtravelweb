@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamDestiny</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter","Rubik",sans-serif;
+        }
+    </style>
+</head>
+<body>
+<header class="w-full bg-[#F9F5E3]">
+    <div class="px-4 md:px-12 lg:px-[150px] py-4 md:py-6 
+                flex flex-col lg:flex-row 
+                lg:justify-between lg:items-center 
+                gap-4">
+
+        <div class="flex items-center justify-between w-full lg:w-auto">
+            <div class="flex items-center space-x-3">
+                <img src="{% static 'logo.png' %}" alt="Logo">
+                <h1 class="text-2xl md:text-[32px] font-bold text-[#121D2D]">
+                    DreamDestiny
+                </h1>
+            </div>
+            <button id="menu-btn" class="lg:hidden text-3xl text-[#121D2D]">
+                ☰
+            </button>
+        </div>
+            <div class=" flex items-center font-semibold gap-2">
+                <i class='bx bxs-envelope'></i>
+                <span class='text-sm md:text-[16px]'>dreamdestinyworldwide@gmail.com</span>
+            </div>
+            <div class=" flex items-center font-semibold  gap-2">
+                <i class='bx bxs-phone'></i>
+                <span>+9811254562</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="px-4 md:px-12 lg:px-[140px] pb-3">
+        <nav id="menu" class="hidden lg:flex justify-between gap-0 bg-white overflow-x-auto">
+
+            <a href="{% url 'home' %}" 
+           class="inline-block py-2 px-4 font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'home' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            Home
+        </a>
+
+        <a href="{% url 'about' %}" 
+           class="inline-block py-2 px-4 font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'about' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            About us
+        </a>
+
+        <a href="{% url 'tour' %}" 
+           class="inline-block py-2 px-4  font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'tour' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            Tour packages
+        </a>
+
+        <a href="{% url 'car' %}" 
+           class="inline-block py-2 px-4  font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'car' or request.resolver_match.url_name == 'vehicle_detail' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            Car Rental
+        </a>
+
+        <a href="{% url 'booking' %}" 
+           class="inline-block py-2 px-4  font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'booking' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            Booking
+        </a>
+
+        <a href="{% url 'service' %}"  class="inline-block py-2 px-4 font-bold hover:bg-gray-50 text-[15px]">
+                Services
+        </a>
+
+        <a href="{% url 'contact' %}" 
+           class="inline-block py-2 px-4 font-bold text-[15px] transition-colors
+           {% if request.resolver_match.url_name == 'contact' %} bg-[#121D2D] text-white {% else %} hover:bg-gray-100 text-[#121D2D] {% endif %}">
+            Contact us
+        </a>
+        </nav>
+
+        <div id="mobile-menu" class="lg:hidden hidden bg-white flex flex-col text-center">
+            <a href="{% url 'home' %}" class="py-3 font-bold {% if request.resolver_match.url_name == 'home' %} bg-[#121D2D] text-white {% endif %}">Home</a>
+            <a href="{% url 'about' %}" class="py-3 font-bold {% if request.resolver_match.url_name == 'about' %} bg-[#121D2D] text-white {% endif %}">About us</a>
+            <a href="{% url 'tour' %}" class="py-3 font-bold {% if request.resolver_match.url_name == 'tour' %} bg-[#121D2D] text-white {% endif %}">Tour packages</a>
+            <a href="{% url 'car' %}" class="py-3 font-bold {% if request.resolver_match.url_name == 'car' %} bg-[#121D2D] text-white {% endif %}">Car Rental</a>
+            <a href="{% url 'booking' %}" class="py-3 hover:bg-gray-50 font-bold">Booking</a>
+            <a href="{% url 'service' %}" class="py-3 hover:bg-gray-50 font-bold">Services</a>
+            <a href="{% url 'contact' %}" class="py-3 hover:bg-gray-50 font-bold">Contact us</a>
+        </div>
+    </div>
+</header>
+
+
+<main>
+{% block content %}
+{% endblock %}
+</main>
+
+<footer class="w-full bg-black text-white pt-16 pb-8 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 text-[16px] sm:grid-cols-2 lg:grid-cols-5 gap-8  mb-6">
+            
+            <div class="space-y-4">
+                <h3 class="font-bold border-b border-gray-800 pb-2 md:border-none">North India Tour</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition-colors">Valley of Kashmir Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Kashmir Holiday Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Golden Triangle Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Shiridi Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">5days Varansasi Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">6 days Varansai Tour</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold border-b border-gray-800 pb-2 md:border-none">Western India Tour</h3>
+                <ul class="space-y-2 ">
+                    <li><a href="#" class="hover:text-white transition-colors">Alibaug Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Dapoli Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Guhagar Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Mahabaleshwar Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Lonavala</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold border-b border-gray-800 pb-2 md:border-none">South India Tour</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition-colors">Pondicherry Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Goa Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Mamallapuram Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Thiruvannamalai Velore</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">UNESCO World Heritage Tour</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold border-b border-gray-800 pb-2 md:border-none">International Tour</h3>
+                <ul class="space-y-2 ">
+                    <li><a href="#" class="hover:text-white transition-colors">Thailand Tour Packages</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Nepal Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Krabi Bangkok Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Krabi Thailand Tour</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Pattaya Tour</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold border-b border-gray-800 pb-2 md:border-none">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'home' %}" class="hover:text-white transition-colors">Home</a></li>
+                    <li><a href="{% url 'about' %}" class="hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="{% url 'tour' %}" class="hover:text-white transition-colors">Tour Packages</a></li>
+                    <li><a href="{% url 'booking' %}" class="hover:text-white transition-colors">Bookings</a></li>
+                    <li><a href="{% url 'service' %}" class="hover:text-white transition-colors">Services</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:text-white transition-colors">Contact us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 pt-2 flex flex-col items-center">
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-3 text-xs font-bold uppercase mb-8 text-gray-400 text-center">
+                <span class="text-white w-full md:w-auto mb-2 md:mb-0">Copyright © Steaming start</span>
+                <a href="#" class="hover:text-white transition-colors">Privacy policy</a>
+                <a href="#" class="hover:text-white transition-colors">Ad choices</a>
+                <a href="#" class="hover:text-white transition-colors">Accessibility</a>
+                <a href="#" class="hover:text-white transition-colors">Manage cookies</a>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-2xl text-white">
+                <a href="#" class="hover:scale-110 transition-transform"><i class='bx bxl-youtube'></i></a>
+                <a href="#" class="hover:scale-110 transition-transform"><i class='bx bxl-facebook-circle'></i></a>
+                <a href="#" class="hover:scale-110 transition-transform"><i class='bx bxl-twitter'></i></a>
+                <a href="#" class="hover:scale-110 transition-transform"><i class='bx bxl-instagram'></i></a>
+                <a href="#" class="hover:scale-110 transition-transform"><i class='bx bxl-amazon'></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const btn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    btn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+    });
+</script>
+</html>

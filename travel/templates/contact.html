@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="relative w-full h-[200px] md:h-[250px] overflow-hidden flex items-center">
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'homebanner.webp' %}" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-sky-500/40 backdrop-blur-[2px]"></div>
+    </div>
+    
+    <div class="relative z-10 w-full px-6 md:px-12 ">
+        <h1 class="text-3xl l font-semibold text-white mb-2 ">
+            Contact us
+        </h1>
+        <nav class="flex font-bold text-lg drop-shadow-sm">
+            <a href="{% url 'home' %}" class="text-black hover:underline">Home</a>
+            <span class="mx-2 text-white">/</span>
+            <span class="text-white">Contact us</span>
+        </nav>
+    </div>
+</section>
+
+<section class="py-10 bg-white px-4 md:px-8 lg:px-16">
+
+  <div class="max-w-5xl mx-auto border border-gray-400 flex items-center mb-10 bg-white">
+    <div class="bg-[#0b1f3a] px-5 py-4 flex items-center justify-center">
+      <i class='bx bxs-phone-call text-white text-2xl'></i>
+    </div>
+    <h2 class="px-6 text-[24px] font-bold text-[#0b1f3a] uppercase tracking-tight">
+      Contact Chennai Tours & Travels
+    </h2>
+  </div>
+
+  <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
+    
+    <div class="lg:col-span-2">
+      <div class="bg-gray-700 text-[24px] text-white text-center py-3 mb-6 font-bold uppercase tracking-widest">
+        Feedback form
+      </div>
+
+        <form method="POST" class="space-y-6 rounded-sm ">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1">
+              <label class="block font-bold text-[#0b1f3a] text-[16px] uppercase">Guest Name</label>
+              <input type="text" name="name" required 
+                      maxlength="50"
+                      inputmode="text"
+                      pattern="[A-Za-z\s]+"
+                      title="Name should contain only letters"
+                      oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                      placeholder="Enter your name"
+                    class="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#0b1f3a] transition-colors">
+            </div>
+
+            <div class="space-y-1">
+              <label class="block font-bold text-[#0b1f3a] text-[16px] uppercase">Phone Number</label>
+              <input type="text" name="phone" required 
+                  maxlength="10"
+                  inputmode="numeric"
+                  placeholder="Enter 10-digit phone number"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                  class="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#0b1f3a] transition-colors">
+            </div>
+
+            <div class="space-y-1">
+              <label class="block font-bold text-[#0b1f3a] text-[16px] uppercase">Mail ID</label>
+              <input type="email" name="email" required placeholder="Enter email address" class="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#0b1f3a] transition-colors">
+            </div>
+
+            <div class="space-y-1">
+              <label class="block font-bold text-[#0b1f3a] text-[16px] uppercase">Your City</label>
+              <input type="text" name="city" required
+                      maxlength="50"
+                      inputmode="text"
+                      pattern="[A-Za-z\s]+"
+                      oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                      title="City should contain only letters"
+                      placeholder="Enter city"
+                      class="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#0b1f3a] transition-colors">
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block font-bold text-[#0b1f3a] text-[16px] uppercase">Message</label>
+            <textarea name="message" rows="5" required placeholder="How can we help you?" class="w-full border border-gray-300 px-4 py-3 outline-none focus:border-[#0b1f3a] transition-colors"></textarea>
+          </div>
+
+          <button type="submit" class="bg-[#0b1f3a] text-[16px] text-white px-10 py-4 font-bold rounded-sm shadow-md hover:bg-black transition-all uppercase tracking-widest active:scale-95">
+            Send Message
+          </button>
+        </form>
+      </div>
+
+    <div class="w-full">
+      <div class="bg-gray-700 text-[24px] text-white text-center py-3 mb-6 font-bold uppercase tracking-widest">
+        Get in Touch
+      </div>
+
+      <div class="space-y-4">
+        <div class="border border-slate-300 p-5 flex items-start gap-5 bg-white hover:shadow-md transition-shadow">
+          <div class="bg-[#0b1f3a] min-w-[50px] h-[50px] flex items-center justify-center rounded-full shrink-0">
+            <i class='bx bxs-map text-white text-xl'></i>
+          </div>
+          <div class="pt-1">
+            <h3 class="font-bold text-[#0b1f3a] text-xl mb-1">Address</h3>
+            <p class="text-sm text-gray-700 leading-snug">
+              No. 128, 6th Street,<br>
+              kamarajar salai, Chennai-600082.
+            </p>
+          </div>
+        </div>
+
+        <div class="border border-slate-300 p-5 flex items-start gap-5 bg-white hover:shadow-md transition-shadow">
+          <div class="bg-[#0b1f3a] min-w-[50px] h-[50px] flex items-center justify-center rounded-full shrink-0">
+            <i class='bx bxs-map text-white text-xl'></i>
+          </div>
+          <div class="pt-1">
+            <h3 class="font-bold text-[#0b1f3a] text-xl mb-1">Address</h3>
+            <p class="text-sm text-gray-700 leading-snug">
+              No. 18, 8th Street,<br>
+              Bharathidhasan salai, Chennai- 600092.
+            </p>
+          </div>
+        </div>
+
+        <div class="border border-slate-300 p-5 flex items-center gap-5 bg-white hover:shadow-md transition-shadow">
+          <div class="bg-[#0b1f3a] min-w-[50px] h-[50px] flex items-center justify-center rounded-full shrink-0">
+            <i class='bx bxs-phone text-white text-xl'></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-[#0b1f3a] text-xl mb-0.5">Phone</h3>
+            <p class="text-md text-gray-700 font-medium">+91 9542587145</p>
+          </div>
+        </div>
+
+        <div class="border border-slate-300 p-5 flex items-center gap-5 bg-white hover:shadow-md transition-shadow">
+          <div class="bg-[#0b1f3a] min-w-[50px] h-[50px] flex items-center justify-center rounded-full shrink-0">
+            <i class='bx bxs-envelope text-white text-xl'></i>
+          </div>
+          <div class="overflow-hidden">
+            <h3 class="font-bold text-[#0b1f3a] text-xl mb-0.5">Mail</h3>
+            <p class="text-sm text-gray-700 break-all font-medium">dreamdestinyworldwide@gmail.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% if messages %}
+  {% for message in messages %}
+  
+  <!-- Overlay -->
+  <div id="popupOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    
+    <!-- Modal Box -->
+    <div class="bg-white w-[90%] max-w-md rounded-sm shadow-xl p-8 text-center relative animate-fadeIn">
+      
+      <!-- Close Button -->
+      <button onclick="closePopup()" 
+              class="absolute top-2 right-3 text-gray-500 text-xl font-bold">
+        &times;
+      </button>
+
+      <!-- Icon -->
+      {% if message.tags == 'success' %}
+        <div class="text-green-600 text-5xl mb-4">✔</div>
+      {% elif message.tags == 'warning' %}
+        <div class="text-yellow-500 text-5xl mb-4">⚠</div>
+      {% else %}
+        <div class="text-red-600 text-5xl mb-4">✖</div>
+      {% endif %}
+
+      <!-- Message -->
+      <h2 class="text-lg font-bold uppercase tracking-wider mb-4">
+        {{ message }}
+      </h2>
+
+      <!-- OK Button -->
+      <button onclick="closePopup()" 
+              class="bg-[#0b1f3a] text-white px-8 py-3 font-bold uppercase text-sm tracking-widest hover:bg-black transition">
+        OK
+      </button>
+
+    </div>
+  </div>
+
+  {% endfor %}
+{% endif %}
+
+<script>
+  function closePopup() {
+    document.getElementById("popupOverlay").style.display = "none";
+  }
+
+  // Auto close after 4 seconds
+  setTimeout(function () {
+    const popup = document.getElementById("popupOverlay");
+    if (popup) {
+      popup.style.display = "none";
+    }
+  }, 4000);
+</script>
+{% endblock %}

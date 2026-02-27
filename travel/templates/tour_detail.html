@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ package.title }} | DreamDestiny Tours{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<div class="max-w-7xl mx-auto p-6 bg-white shadow-sm mt-6 mb-20">
+    <h1 class="border-b pb-4 mb-8 text-2xl font-bold flex items-center gap-3 text-[#121D2D]">
+        <i class='bx bxs-map-pin text-[#ca8a04]'></i> {{ package.title }}
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2">
+            <div class="swiper tourSwiper rounded-lg shadow-lg mb-8">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="{{ package.image.url }}" class="w-full h-[450px] object-cover">
+                    </div>
+                    </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next text-[#ca8a04]"></div>
+                <div class="swiper-button-prev text-[#ca8a04]"></div>
+            </div>
+
+            <div class="prose max-w-none text-gray-700 leading-relaxed mb-10">
+                <h3 class="text-xl font-bold text-[#121D2D] mb-4 uppercase tracking-tighter">Package Overview</h3>
+                <p>{{ package.overview }}</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <div class="flex flex-col gap-4 mb-6">
+                    <span class="bg-[#ca8a04] text-black px-4 py-2 font-black text-center rounded uppercase text-xs">
+                        ₹ {{ package.price }} / Per Person
+                    </span>
+                    <span class="bg-[#121D2D] text-white px-4 py-2 font-black text-center rounded uppercase text-xs">
+                        <i class='bx bxs-time'></i> {{ package.duration_days }} Days & {{ package.duration_nights }} Nights
+                    </span>
+                </div>
+
+                <ul class="space-y-4 mb-8 text-sm font-bold text-gray-600">
+                    <li class="flex items-center gap-3"><i class='bx bx-check-circle text-green-600 text-xl'></i> AC Accommodation</li>
+                    <li class="flex items-center gap-3"><i class='bx bx-check-circle text-green-600 text-xl'></i> Professional Guide</li>
+                    <li class="flex items-center gap-3"><i class='bx bx-check-circle text-green-600 text-xl'></i> Sightseeing Entry</li>
+                </ul>
+
+                <a href="{% url 'booking' %}" class="block bg-[#121D2D] text-white w-full py-4 rounded font-black text-center text-lg hover:bg-black transition shadow-lg uppercase tracking-widest">
+                    Book This Tour
+                </a>
+            </div>
+
+            <div class="flex justify-center gap-4 py-4 border-t">
+                <div class="w-10 h-10 bg-[#00aced] rounded-full flex items-center justify-center text-white"><i class='bx bxl-twitter'></i></div>
+                <div class="w-10 h-10 bg-[#bd081c] rounded-full flex items-center justify-center text-white"><i class='bx bxl-pinterest'></i></div>
+                <div class="w-10 h-10 bg-[#3b5998] rounded-full flex items-center justify-center text-white"><i class='bx bxl-facebook'></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 space-y-4">
+        <h3 class="text-2xl font-bold text-[#121D2D] mb-6">Detailed Itinerary</h3>
+        
+        <details class="group border rounded-md" open>
+            <summary class="list-none p-5 font-bold text-gray-800 bg-gray-50 cursor-pointer flex justify-between items-center transition hover:bg-gray-100">
+                <span>Arrival and Sightseeing</span>
+                <span class="group-open:rotate-180 transition-transform"><i class='bx bx-chevron-down text-2xl'></i></span>
+            </summary>
+            <div class="p-6 text-gray-600 leading-relaxed border-t bg-white">
+                {{ package.itinerary|linebreaks }}
+            </div>
+        </details>
+
+        <details class="group border rounded-md">
+            <summary class="list-none p-5 font-bold text-gray-800 bg-gray-50 cursor-pointer flex justify-between items-center transition hover:bg-gray-100">
+                <span>Inclusions & Exclusions</span>
+                <span class="group-open:rotate-180 transition-transform"><i class='bx bx-chevron-down text-2xl'></i></span>
+            </summary>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 border-t bg-white">
+                <div>
+                    <h4 class="font-black text-green-700 uppercase mb-3">What's Included</h4>
+                    <p class="text-sm">{{ package.inclusions|linebreaks }}</p>
+                </div>
+                <div>
+                    <h4 class="font-black text-red-700 uppercase mb-3">What's Excluded</h4>
+                    <p class="text-sm">{{ package.exclusions|linebreaks }}</p>
+                </div>
+            </div>
+        </details>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper(".tourSwiper", {
+        loop: true,
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        autoplay: { delay: 4000 },
+    });
+</script>
+{% endblock %}

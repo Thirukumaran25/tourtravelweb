@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+        .transition-all { transition: all 0.5s ease; }
+</style>
+
+{% if messages %}
+      {% for message in messages %}
+        <div id="popupOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white w-[90%] max-w-md rounded-sm shadow-xl p-8 text-center relative animate-fadeIn">
+            <button onclick="closePopup()" class="absolute top-2 right-3 text-gray-500 text-xl font-bold">&times;</button>
+            {% if message.tags == 'success' %}
+              <div class="text-green-600 text-5xl mb-4">✔</div>
+            {% elif message.tags == 'warning' %}
+              <div class="text-yellow-500 text-5xl mb-4">⚠</div>
+            {% else %}
+              <div class="text-red-600 text-5xl mb-4">✖</div>
+            {% endif %}
+            <h2 class="text-lg font-bold uppercase tracking-wider mb-4">{{ message }}</h2>
+            <button onclick="closePopup()" class="bg-[#0b1f3a] text-white px-8 py-3 font-bold uppercase text-sm tracking-widest hover:bg-black transition">OK</button>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+<section class="relative min-h-[600px] w-full flex items-center justify-center bg-cover bg-center px-4" 
+         style="background-image:url('{% static 'homebanner.webp' %}');">
+    
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="relative z-10 w-full max-w-lg  backdrop-blur-sm p-1">
+    <div class="flex w-60 shadow">
+        <button id="tab-car" type="button" onclick="switchTab('car')" 
+            class="flex-1 flex items-center justify-center gap-2 py-4 font-bold text-lg transition-all bg-[#121D2D] text-white rounded-tl-md">
+            <i class='bx bxs-car text-2xl'></i> CAR
+        </button>
+        <button id="tab-tour" type="button" onclick="switchTab('tour')" 
+            class="flex-1 flex items-center justify-center gap-2 py-4 font-bold text-lg transition-all bg-gray-200 text-[#121D2D] rounded-tr-md">
+            <i class='bx bx-sun text-2xl'></i> TOUR
+        </button>
+    </div>
+
+    <form method="POST" id="miniBookingForm" class="p-2 grid grid-cols-1 bg-white/90 md:grid-cols-2 gap-4">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" id="form_type" value="car">
+
+        <div class="space-y-4">
+            <input type="text" name="name" placeholder="Name" required pattern="[A-Za-z\s]+" title="Only letters allowed"
+                oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#121D2D]">
+            <input type="text" name="phone" placeholder="Phone" required pattern="\d{10}" title="10 digit number"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#121D2D]">
+            <input type="email" name="email" placeholder="Email" required
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#121D2D]">
+        </div>
+
+        <div class="space-y-4">
+            <div style="display: grid; grid-template-columns: 1fr; align-items: start;">
+            <div id="fields-car" class="space-y-4 flex flex-col">
+                <input type="date" name="pickup_date" id="date-car" 
+                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] leading-none">
+                <select name="vehicle_model" id="select-car"
+                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D]">
+                    <option value="">-- Select Vehicle Model --</option>
+                    {% for model in vehicle_models %}
+                        <option value="{{ model }}">{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="fields-tour" class="hidden space-y-4 flex flex-col">
+                <input type="date" name="pickup_date" id="date-tour"
+                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] leading-none">
+                
+                <select name="tour_package" id="select-tour"
+                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D]">
+                    <option value="">-- Select Package --</option>
+                    {% for package in tour_packages %}
+                        <option value="{{ package }}">{{ package }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-[#121D2D] text-white py-3 font-bold rounded shadow-lg hover:bg-black transition-colors uppercase tracking-wider">
+                Book
+            </button>
+        </div>
+    </form>
+</div>
+</section>
+
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <section class="mb-16">
+        <div class="border border-gray-300 mb-6  flex sm:flex-row 
+            items-start sm:items-center justify-between 
+            shadow-sm bg-white gap-2 sm:gap-0">
+            <h2 class="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2 sm:gap-3">
+                <div class="bg-[#121D2D] p-1 sm:p-2 rounded-sm text-white flex items-center justify-center">
+                    <i class='bx bxs-bus text-sm sm:text-base md:text-lg'></i>
+                </div>
+                <span>Bus/Coach Rental</span>
+            </h2>
+            <a href="{% url 'car' %}?type=bus" 
+            class="text-xs sm:text-sm md:text-base p-1 md:px-2 font-bold text-gray-500 
+                    hover:text-[#121D2D] transition-colors">
+                View All
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for bus in buses %}
+            <div class="bg-gray-300 rounded-md border border-gray-200 overflow-hidden text-center hover:shadow-lg transition-shadow">
+                <img src="{{ bus.main_image.url }}" class="w-full h-40 object-cover rounded-sm mb-4" alt="{{ bus.name }}">
+                <h3 class="font-bold text-gray-800 mb-4 line-clamp-1 uppercase text-sm">{{ bus.name }}</h3>
+                
+                <div class="grid grid-cols-4 px-4 gap-1 text-[9px] font-bold text-gray-600">
+                    <div class="flex flex-col items-center"><i class='bx bx-user border border-black rounded-full px-2 py-1 text-xl mb-1'></i>{{ bus.seat_count }}</div>
+                    <div class="flex flex-col  items-center"><i class='bx bx-tv border border-black rounded-full px-2 py-1 text-xl mb-1'></i>Yes</div>
+                    <div class="flex flex-col items-center"><i class='bx bx-wind border border-black rounded-full px-2 py-1 text-xl mb-1'></i>AC</div>
+                    <div class="flex flex-col items-center"><i class='bx bx-volume-full border border-black rounded-full px-2 py-1 text-xl mb-1'></i>Yes</div>
+                </div>
+
+                <div class="flex p-4 gap-2">
+                    <a href="{% url 'vehicle_detail' bus.id %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] uppercase hover:bg-[#b07803] transition-colors">Details</a>
+                    <button class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-16">
+        <div class="border border-gray-300 mb-6  flex sm:flex-row 
+            items-start sm:items-center justify-between 
+            shadow-sm bg-white gap-2 sm:gap-0">
+            <h2 class="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2 sm:gap-3 break-words">
+                <div class="bg-[#121D2D] p-1 sm:p-2 rounded-sm text-white flex items-center justify-center">
+                    <i class='bx bxs-car text-sm sm:text-base md:text-lg'></i>
+                </div>
+                <span>Luxury Car Rental</span>
+            </h2>
+            <a href="{% url 'car' %}?type=car" 
+            class="text-xs sm:text-sm md:text-base px-2 py-1 font-bold text-gray-500 
+                    hover:text-[#121D2D] transition-colors whitespace-nowrap">
+                View All
+            </a>
+
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for car in luxury_cars %}
+            <div class="bg-gray-300 rounded-md border border-gray-200 overflow-hidden text-center hover:shadow-lg transition-shadow">
+                <img src="{{ car.main_image.url }}" class="w-full h-40 object-cover rounded-sm mb-4" alt="{{ car.name }}">
+                <h3 class="font-bold text-gray-800 mb-4 line-clamp-1 uppercase text-sm">{{ car.name }}</h3>
+                
+                <div class="grid grid-cols-4 gap-1 px-4 text-[9px] font-bold text-gray-600">
+                    <div class="flex flex-col items-center"><i class='bx bx-user border border-black rounded-full px-2 py-1 text-xl mb-1'></i>{{ car.seat_count }}</div>
+                    <div class="flex flex-col items-center"><i class='bx bx-tv border border-black rounded-full px-2 py-1 text-xl mb-1'></i>Yes</div>
+                    <div class="flex flex-col items-center"><i class='bx bx-wind border border-black rounded-full px-2 py-1 text-xl mb-1'></i>AC</div>
+                    <div class="flex flex-col items-center"><i class='bx bx-volume-full border border-black rounded-full px-2 py-1 text-xl mb-1'></i>Yes</div>
+                </div>
+
+                <div class="flex gap-2 p-4">
+                    <a href="{% url 'vehicle_detail' car.id %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] uppercase hover:bg-[#b07803] transition-colors">Details</a>
+                    <button class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <div class="border border-gray-300 mb-6 flex sm:flex-row 
+            items-start sm:items-center justify-between 
+            shadow-sm bg-white gap-2 sm:gap-0">
+            <h2 class="text-md md:text-2xl font-bold flex items-center gap-2 text-[#121D2D]">
+                <div class="bg-[#121D2D] p-3 rounded-sm text-white flex items-center justify-center">
+                    <i class='bx bx-map-alt text-sm sm:text-base md:text-lg'></i>
+                </div>
+                <span>Tour Package From Chennai</span>
+            </h2>
+            <a href="{% url 'tour' %}" 
+            class="text-xs sm:text-sm md:text-base px-2 py-1 font-bold text-gray-500 
+                    hover:text-[#121D2D] transition-colors whitespace-nowrap">
+                View All
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for tour in tours %}
+            <div class="bg-gray-100 rounded-md border border-gray-200 overflow-hidden text-center shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+                <div class="h-44 overflow-hidden">
+                    <img src="{{ tour.image.url }}" class="w-full h-full object-cover" alt="{{ tour.title }}">
+                </div>
+
+                <div class="p-5 bg-gray-200/50">
+                    <h3 class="font-bold text-sm mb-6 text-[#121D2D] line-clamp-1 uppercase">{{ tour.title }}</h3>
+                    
+                    <div class="flex gap-2 justify-center">
+                        <a href="{% url 'tour_detail' tour.slug %}" 
+                           class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] hover:bg-[#b07803] transition-colors uppercase tracking-tighter">
+                            Details
+                        </a>
+                        <button class="bg-[#121D2D] text-white px-5 py-2 rounded-md font-bold text-[10px] hover:bg-black transition-colors uppercase tracking-tighter">
+                            Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="col-span-full text-center text-gray-400 py-10 italic">No tour packages found.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+<section class="w-full bg-white py-12">
+    <div class=" mx-auto">
+       <div class="flex sm:flex-row items-start sm:items-center border border-gray-400 my-4 bg-white shadow-sm">
+            <div class="bg-[#121D2D] p-3 flex items-center justify-center">
+                <i class='bx bx-map text-white text-base sm:text-lg md:text-xl'></i>
+            </div>
+            <div class="px-3 ">
+                <h2 class="text-md  md:text-2xl font-semibold text-[#121D2D]">
+                    Corporate / Group Tour Package
+                </h2>
+            </div>
+        </div>
+    <div class=" w-full bg-white shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-200">
+        <div class="md:w-1/2 relative h-[400px] md:h-auto overflow-hidden">
+            <img id="display-image" 
+                 src="https://images.unsplash.com/photo-1523050853023-8c2d2909f4f3?auto=format&fit=crop&q=80&w=800" 
+                 alt="Tour" 
+                 class="absolute inset-0 w-full h-full object-cover transition-all duration-700 transform scale-100">
+            <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+
+        <div class="md:w-1/2 flex flex-col">
+            <div id="item-0" class="tour-item p-6 cursor-pointer border-b border-gray-100 transition-all bg-white text-gray-800" 
+                 data-img="{% static 'schooltour.webp'%}">
+                <h3 class="text-xl font-bold mb-2">School Tour Package</h3>
+                <p class="text-sm opacity-90">Good experience and language drivers with high quality of service and you can plan well your journey.</p>
+            </div>
+
+            <div id="item-1" class="tour-item p-6 cursor-pointer border-b border-gray-100 transition-all bg-white text-gray-800" 
+                 data-img="{% static 'collegetour.webp'%}">
+                <h3 class="text-xl font-bold mb-2">College Tour Package</h3>
+                <p class="text-sm opacity-70">Enjoy yourself with our best bundles and Industrial visits; we are here to take you to the most attractive destinations.</p>
+            </div>
+
+            <div id="item-2" class="tour-item p-6 cursor-pointer border-b border-gray-100 transition-all bg-white text-gray-800" 
+                 data-img="{% static 'corporatetour.webp'%}">
+                <h3 class="text-xl font-bold mb-2">Corporate Tour Package</h3>
+                <p class="text-sm opacity-70">Enjoy yourself with our best bundles and Industrial visits; the latest technology and networking opportunities.</p>
+            </div>
+
+            <div id="item-3" class="tour-item p-6 cursor-pointer transition-all bg-white text-gray-800" 
+                 data-img="{% static 'grouptour.webp'%}">
+                <h3 class="text-xl font-bold mb-2">Group Tour Package</h3>
+                <p class="text-sm opacity-70">Enjoy Exclusive group tour packages with us to get an exciting and fun filled experience which is unforgettable.</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section class="w-full bg-white py-12">
+    
+    <div class=" mx-auto ">
+        <div class="flex sm:flex-row items-start sm:items-center border border-gray-400 bg-white shadow-sm">
+            <div class="bg-[#121D2D] p-2 flex items-center justify-center">
+                <i class='bx bx-map text-white text-base sm:text-lg md:text-xl'></i>
+            </div>
+            <div class="px-3 sm:px-4 py-1">
+                <h2 class="text-lg sm:text-xl md:text-2xl font-semibold text-[#121D2D] break-words">
+                    About Dream Destiny
+                </h2>
+            </div>
+        </div>
+
+        <!-- Main Heading -->
+        <h3 class="mt-10 text-[24px]  font-bold text-[#1F2937] leading-snug">
+            Unforgettable experience @ DreamDestiny Tours and travels for Best tour packages.
+        </h3>
+
+        <!-- Description -->
+        <p class="mt-6 text-gray-600 text-base md:text-lg leading-relaxed max-w-4xl">
+            DreamDestiny tours and travels is to give you, best service at a reasonable cost. 
+            We are expertise in Economy Tour bundles and tourism, best benefits in Car and Bus rental 
+            with complete facility. To increase your experience, visit our website and find how you 
+            can enjoy luxurious and memorable tour packages.
+        </p>
+
+    </div>
+
+    </section>
+</div>
+
+
+
+<script>
+function switchTab(type) {
+    const tabCar = document.getElementById('tab-car');
+    const tabTour = document.getElementById('tab-tour');
+    const fieldsCar = document.getElementById('fields-car');
+    const fieldsTour = document.getElementById('fields-tour');
+    const formType = document.getElementById('form_type');
+
+    const carInputs = fieldsCar.querySelectorAll('input, select');
+    const tourInputs = fieldsTour.querySelectorAll('input, select');
+
+    if (type === 'car') {
+        tabCar.classList.replace('bg-gray-200', 'bg-[#121D2D]');
+        tabCar.classList.replace('text-[#121D2D]', 'text-white');
+        tabTour.classList.replace('bg-[#121D2D]', 'bg-gray-200');
+        tabTour.classList.replace('text-white', 'text-[#121D2D]');
+        
+        // Show/Hide Logic
+        fieldsCar.classList.remove('hidden');
+        fieldsTour.classList.add('hidden');
+
+        carInputs.forEach(input => input.disabled = false);
+        tourInputs.forEach(input => input.disabled = true);
+        
+        formType.value = 'car';
+    } else {
+        tabTour.classList.replace('bg-gray-200', 'bg-[#121D2D]');
+        tabTour.classList.replace('text-[#121D2D]', 'text-white');
+        tabCar.classList.replace('bg-[#121D2D]', 'bg-gray-200');
+        tabCar.classList.replace('text-white', 'text-[#121D2D]');
+        
+        // Show/Hide Logic
+        fieldsTour.classList.remove('hidden');
+        fieldsCar.classList.add('hidden');
+
+        tourInputs.forEach(input => input.disabled = false);
+        carInputs.forEach(input => input.disabled = true);
+
+        formType.value = 'tour';
+    }
+}
+
+
+// Popup close function
+
+function closePopup() {
+  const popup = document.getElementById("popupOverlay");
+  if(popup) popup.style.display = "none";
+}
+setTimeout(closePopup, 4000);
+</script>
+</script>
+
+<script>
+        const items = document.querySelectorAll('.tour-item');
+        const displayImg = document.getElementById('display-image');
+        let currentIndex = 0;
+
+        function updateSelection(index) {
+            // Reset all items
+            items.forEach(item => {
+                item.classList.replace('bg-blue-900', 'bg-white');
+                item.classList.replace('text-white', 'text-gray-800');
+                item.querySelector('p').classList.replace('opacity-90', 'opacity-70');
+            });
+
+            // Highlight active item
+            const activeItem = items[index];
+            activeItem.classList.replace('bg-white', 'bg-blue-900');
+            activeItem.classList.add('text-white');
+            activeItem.querySelector('p').classList.replace('opacity-70', 'opacity-90');
+
+            // Change Image with animation
+            displayImg.style.opacity = '0';
+            setTimeout(() => {
+                displayImg.src = activeItem.getAttribute('data-img');
+                displayImg.style.opacity = '1';
+            }, 300);
+
+            currentIndex = index;
+        }
+
+        // Infinite Loop Logic
+        function startAutoPlay() {
+            setInterval(() => {
+                let nextIndex = (currentIndex + 1) % items.length;
+                updateSelection(nextIndex);
+            }, 4000); // Change every 4 seconds
+        }
+
+        // Manual Selection (Click)
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                updateSelection(index);
+            });
+        });
+
+        // Initialize
+        updateSelection(0);
+        startAutoPlay();
+    </script>
+{% endblock %}

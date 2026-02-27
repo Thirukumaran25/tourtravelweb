@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hire Luxury Car in Chennai | {{ vehicle.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<section class="relative w-full h-[200px] md:h-[250px] overflow-hidden flex items-center">
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'homebanner.webp' %}" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-sky-500/40 backdrop-blur-[2px]"></div>
+    </div>
+
+    <div class="relative z-10 w-full px-6 md:px-12 ">
+        <h1 class="text-3xl l font-semibold text-white mb-2 ">
+            Car Rental
+        </h1>
+        <nav class="flex font-bold text-lg drop-shadow-sm">
+            <a href="{% url 'home' %}" class="text-black hover:underline">Home</a>
+            <span class="mx-2 text-white">/</span>
+            <span class="text-white">Car Rental</span>
+        </nav>
+    </div>
+</section>
+
+<div class="max-w-6xl mx-auto p-6 bg-white  mt-10">
+    <h1 class="border border-black text-lg sm:text-xl md:text-2xl mb-4 md:mb-6 font-bold flex items-center gap-2 md:gap-3">
+        <i class="bx bxs-car bg-[#121D2D] text-white p-2 sm:p-3 md:p-4 text-base sm:text-lg md:text-xl"></i>
+        <span class="leading-tight">
+            Hire Luxury Car in Chennai
+        </span>
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+        <div class="w-full">
+            <div class="swiper mySwiper rounded-sm shadow-md">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="{{ vehicle.main_image.url }}" class="w-full h-[400px] object-cover">
+                    </div>
+                    {% if vehicle.side_image %}
+                    <div class="swiper-slide">
+                        <img src="{{ vehicle.side_image.url }}" class="w-full h-[400px] object-cover">
+                    </div>
+                    {% endif %}
+                    {% if vehicle.interior_image %}
+                    <div class="swiper-slide">
+                        <img src="{{ vehicle.interior_image.url }}" class="w-full h-[400px] object-cover">
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next" style="color: #ca8a04;"></div>
+                <div class="swiper-button-prev" style="color: #ca8a04;"></div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="flex gap-3">
+                <span class="bg-[#C9A24D] px-4 py-1 font-bold text-sm text-black uppercase tracking-tighter">{{ vehicle.price_tag }}</span>
+                <span class="bg-[#C9A24D] px-4 py-1 font-bold text-sm text-black flex items-center gap-2">
+                    <i class='bx bxs-user'></i> {{ vehicle.seat_count }}
+                </span>
+            </div>
+            
+            <div class="flex gap-3">
+                <span class="bg-slate-500 text-white px-4 py-1 text-sm font-bold flex items-center gap-2 rounded-sm italic">
+                    <i class='bx bx-wind'></i> AC
+                </span>
+                <span class="bg-slate-500 text-white px-4 py-1 text-sm font-bold flex items-center gap-2 rounded-sm italic">
+                    <i class='bx bx-volume-full'></i> Yes
+                </span>
+                <span class="bg-slate-500 text-white px-4 py-1 text-sm font-bold flex items-center gap-2 rounded-sm italic">
+                    <i class='bx bx-briefcase'></i> {{ vehicle.luggage_capacity }}
+                </span>
+            </div>
+
+            <div class="flex gap-4">
+                <div class="w-10 h-10 bg-[#00aced] rounded-full flex items-center justify-center text-white cursor-pointer"><i class='bx bxl-twitter'></i></div>
+                <div class="w-10 h-10 bg-[#bd081c] rounded-full flex items-center justify-center text-white cursor-pointer"><i class='bx bxl-pinterest'></i></div>
+                <div class="w-10 h-10 bg-[#4285f4] rounded-full flex items-center justify-center text-white cursor-pointer"><i class='bx bxl-google'></i></div>
+                <div class="w-10 h-10 bg-[#3b5998] rounded-full flex items-center justify-center text-white cursor-pointer"><i class='bx bxl-facebook'></i></div>
+            </div>
+            <a href="{% url 'booking' %}"
+                class="inline-block bg-[#111827] text-white py-1 px-6 rounded-md font-semibold text-lg transition shadow-[0_4px_0_rgb(10,25,50)]">
+                    Book Here
+                </a>
+        </div>
+    </div>
+
+    <div class="text-sm text-gray-600 leading-relaxed mb-10 ">
+        {{ vehicle.main_description }}
+    </div>
+
+    <div class="space-y-4">
+           {% if vehicle.sub_desc_1_content %}
+                <div class="p-4 text-sm text-gray-600 border">
+                    {{ vehicle.sub_desc_1_content }}
+                </div>
+            {% endif %}
+
+            {% if vehicle.sub_desc_2_content %}
+                <div class="p-4 text-sm text-gray-600 border">
+                    {{ vehicle.sub_desc_2_content }}
+                </div>
+            {% endif %}
+    </div>
+</div>
+
+
+<div class="max-w-6xl mx-auto mt-16 mb-20 px-6 md:px-0">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between 
+                border border-black 
+                text-lg sm:text-xl md:text-2xl 
+                gap-3 sm:gap-0 
+                mb-6 md:mb-8 p-3 sm:p-0">
+        <h1 class="font-bold flex items-center gap-2 sm:gap-3">
+            <i class="bx bxs-car bg-[#121D2D] text-white 
+                    p-2 sm:p-3 md:p-4 
+                    text-base sm:text-lg md:text-xl"></i>
+            <span>Related Vehicles</span>
+        </h1>
+        <a href="{% url 'car' %}" 
+        class="text-xs sm:text-sm px-2 font-bold text-yellow-600 
+                hover:underline uppercase tracking-tight sm:tracking-tighter">
+            View All
+        </a>
+    </div>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for rv in related_vehicles %}
+        <div class="bg-gray-100 rounded-sm overflow-hidden shadow-md border border-gray-200 group">
+            <div class="relative overflow-hidden aspect-video">
+                <img src="{{ rv.main_image.url }}" 
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute top-2 left-2 bg-yellow-600 text-[10px] font-black px-2 py-0.5 uppercase">
+                    {{ rv.price_tag }}
+                </div>
+            </div>
+            
+            <div class="p-4 text-center">
+                <h3 class="font-bold text-sm mb-3 truncate">{{ rv.name }}</h3>
+                
+                <div class="grid grid-cols-4 gap-2 mb-6 text-[10px] font-bold">
+                        <div><i class='bx bx-accessibility border border-black rounded-full px-2 py-1 text-2xl'></i><br>{{ rv.seat_count }}</div>
+                        <div><i class='bx bx-tv border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if rv.has_tv %}Yes{% else %}No{% endif %}</div>
+                        <div><i class='bx bx-wind border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if rv.has_ac %}AC{% else %}Non-AC{% endif %}</div>
+                        <div><i class='bx bx-volume-full border border-black rounded-full px-2 py-1 text-2xl'></i><br>{% if rv.has_speaker %}Yes{% else %}No{% endif %}</div>
+                </div>
+
+                <div class="flex gap-2">
+                    <a href="{% url 'vehicle_detail' rv.pk %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded font-bold text-xs hover:bg-yellow-500 transition">Vehicle Details</a>
+                    <button class="bg-blue-950 text-white px-3 py-1.5 rounded-sm font-bold text-[10px] hover:bg-black transition uppercase">
+                        Book
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="col-span-full text-center text-gray-400 italic text-sm">No similar luxury vehicles found at this time.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        loop: true,
+        spaceBetween: 10,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+    });
+</script>
+{% endblock %}
