@@ -27,6 +27,9 @@ def home(request):
         if not re.fullmatch(r"\d{10}", phone):
             messages.error(request, "Phone number must be exactly 10 digits.")
             return redirect('home')
+        if not re.fullmatch(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
+            messages.error(request, "Enter a valid email address with a proper domain (e.g., .com, .in).")
+            return redirect('home')
 
         booking_kwargs = {
             'guest_name': name,
@@ -158,6 +161,10 @@ def booking(request):
         if not re.fullmatch(r"[A-Za-z\s]+", city):
             messages.error(request, "City should contain only letters.")
             return redirect('booking')
+        
+        if not re.fullmatch(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
+            messages.error(request, "Enter a valid email address with a proper domain (e.g., .com, .in).")
+            return redirect('booking')
 
         email_subject = ""
         email_message = ""
@@ -264,7 +271,6 @@ def contact(request):
         city = request.POST.get('city')
         message = request.POST.get('message')
 
-        # Backend validation
         if not re.fullmatch(r"[A-Za-z\s]+", name):
             messages.error(request, "Name should contain only letters.")
             return redirect('contact')
@@ -275,6 +281,10 @@ def contact(request):
 
         if not re.fullmatch(r"[A-Za-z\s]+", city):
             messages.error(request, "City should contain only letters.")
+            return redirect('contact')
+        
+        if not re.fullmatch(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email):
+            messages.error(request, "Enter a valid email address with a proper domain (e.g., .com, .in).")
             return redirect('contact')
 
         # Save to database

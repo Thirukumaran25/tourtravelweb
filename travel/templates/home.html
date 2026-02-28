@@ -52,15 +52,23 @@
             <input type="text" name="phone" placeholder="Phone" required pattern="\d{10}" title="10 digit number"
                 oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
                 class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#121D2D]">
-            <input type="email" name="email" placeholder="Email" required
+            <input type="email" name="email" 
+                    placeholder="Email (name@example.com)" 
+                required
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                title="Please enter a valid email address ending with a domain (e.g., .com, .in)"
+                oninvalid="this.setCustomValidity('Invalid format. Please include a domain like .com or .in')"
+                oninput="this.setCustomValidity('')"
                 class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#121D2D]">
         </div>
 
         <div class="space-y-4">
             <div style="display: grid; grid-template-columns: 1fr; align-items: start;">
-            <div id="fields-car" class="space-y-4 flex flex-col">
+                <div id="fields-car" class="space-y-4 flex flex-col" style="grid-area: 1 / 1;">
                 <input type="date" name="pickup_date" id="date-car" 
-                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] leading-none">
+                style="height: 50px; min-height: 50px; line-height: 50px; display: block; color: #121D2D;"
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] appearance-none">
+                
                 <select name="vehicle_model" id="select-car"
                     class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D]">
                     <option value="">-- Select Vehicle Model --</option>
@@ -70,9 +78,10 @@
                 </select>
             </div>
 
-            <div id="fields-tour" class="hidden space-y-4 flex flex-col">
-                <input type="date" name="pickup_date" id="date-tour"
-                    class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] leading-none">
+            <div id="fields-tour" class="hidden space-y-4 flex flex-col" style="grid-area: 1 / 1;">
+                <input type="date" name="pickup_date" id="date-tour" 
+                style="height: 50px; min-height: 50px; line-height: 50px; display: block; color: #121D2D;"
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D] appearance-none" disabled>
                 
                 <select name="tour_package" id="select-tour"
                     class="w-full h-[50px] p-3 bg-gray-100 border border-gray-300 rounded focus:ring-2 focus:ring-[#121D2D]">
@@ -82,7 +91,7 @@
                     {% endfor %}
                 </select>
             </div>
-            </div>
+        </div>
 
             <button type="submit"
                 class="w-full bg-[#121D2D] text-white py-3 font-bold rounded shadow-lg hover:bg-black transition-colors uppercase tracking-wider">
@@ -128,7 +137,7 @@
 
                 <div class="flex p-4 gap-2">
                     <a href="{% url 'vehicle_detail' bus.id %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] uppercase hover:bg-[#b07803] transition-colors">Details</a>
-                    <button class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</button>
+                    <a href="{% url 'booking' %}"  class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</a>
                 </div>
             </div>
             {% endfor %}
@@ -168,7 +177,7 @@
 
                 <div class="flex gap-2 p-4">
                     <a href="{% url 'vehicle_detail' car.id %}" class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] uppercase hover:bg-[#b07803] transition-colors">Details</a>
-                    <button class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</button>
+                    <a href="{% url 'booking' %}"  class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</a>
                 </div>
             </div>
             {% endfor %}
@@ -207,9 +216,7 @@
                            class="flex-1 bg-[#C9A24D] text-black py-2 rounded-md font-bold text-[10px] hover:bg-[#b07803] transition-colors uppercase tracking-tighter">
                             Details
                         </a>
-                        <button class="bg-[#121D2D] text-white px-5 py-2 rounded-md font-bold text-[10px] hover:bg-black transition-colors uppercase tracking-tighter">
-                            Book
-                        </button>
+                        <a href="{% url 'booking' %}"  class="bg-[#121D2D] text-white px-4 py-2 rounded-md font-bold text-[10px] uppercase hover:bg-black transition-colors">Book</a>
                     </div>
                 </div>
             </div>
@@ -313,6 +320,8 @@ function switchTab(type) {
 
     const carInputs = fieldsCar.querySelectorAll('input, select');
     const tourInputs = fieldsTour.querySelectorAll('input, select');
+    const carInput = document.getElementById('date-car');
+    const tourInput = document.getElementById('date-tour');
 
     if (type === 'car') {
         tabCar.classList.replace('bg-gray-200', 'bg-[#121D2D]');
@@ -320,12 +329,14 @@ function switchTab(type) {
         tabTour.classList.replace('bg-[#121D2D]', 'bg-gray-200');
         tabTour.classList.replace('text-white', 'text-[#121D2D]');
         
-        // Show/Hide Logic
         fieldsCar.classList.remove('hidden');
         fieldsTour.classList.add('hidden');
 
         carInputs.forEach(input => input.disabled = false);
         tourInputs.forEach(input => input.disabled = true);
+
+        carInput.disabled = false;
+        tourInput.disabled = true;
         
         formType.value = 'car';
     } else {
@@ -334,19 +345,29 @@ function switchTab(type) {
         tabCar.classList.replace('bg-[#121D2D]', 'bg-gray-200');
         tabCar.classList.replace('text-white', 'text-[#121D2D]');
         
-        // Show/Hide Logic
         fieldsTour.classList.remove('hidden');
         fieldsCar.classList.add('hidden');
 
         tourInputs.forEach(input => input.disabled = false);
         carInputs.forEach(input => input.disabled = true);
 
+        carInput.disabled = true;
+        tourInput.disabled = false;
+
         formType.value = 'tour';
     }
 }
 
-
-// Popup close function
+document.querySelectorAll('input[type="date"]').forEach(input => {
+    input.addEventListener('change', function() {
+        if (this.value) {
+            this.style.color = "#121D2D"; 
+        }
+    });
+    input.addEventListener('click', function() {
+        this.showPicker(); 
+    });
+});
 
 function closePopup() {
   const popup = document.getElementById("popupOverlay");
@@ -362,20 +383,17 @@ setTimeout(closePopup, 4000);
         let currentIndex = 0;
 
         function updateSelection(index) {
-            // Reset all items
             items.forEach(item => {
                 item.classList.replace('bg-blue-900', 'bg-white');
                 item.classList.replace('text-white', 'text-gray-800');
                 item.querySelector('p').classList.replace('opacity-90', 'opacity-70');
             });
 
-            // Highlight active item
             const activeItem = items[index];
             activeItem.classList.replace('bg-white', 'bg-blue-900');
             activeItem.classList.add('text-white');
             activeItem.querySelector('p').classList.replace('opacity-70', 'opacity-90');
 
-            // Change Image with animation
             displayImg.style.opacity = '0';
             setTimeout(() => {
                 displayImg.src = activeItem.getAttribute('data-img');
@@ -385,22 +403,19 @@ setTimeout(closePopup, 4000);
             currentIndex = index;
         }
 
-        // Infinite Loop Logic
         function startAutoPlay() {
             setInterval(() => {
                 let nextIndex = (currentIndex + 1) % items.length;
                 updateSelection(nextIndex);
-            }, 4000); // Change every 4 seconds
+            }, 4000); 
         }
 
-        // Manual Selection (Click)
         items.forEach((item, index) => {
             item.addEventListener('click', () => {
                 updateSelection(index);
             });
         });
 
-        // Initialize
         updateSelection(0);
         startAutoPlay();
     </script>
